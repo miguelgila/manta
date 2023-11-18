@@ -2,3 +2,6 @@
 /.vscode
 /sat-file
 Cargo.lock
+.idea/
+*.code-workspace
+*.log
