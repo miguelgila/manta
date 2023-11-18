@@ -18,7 +18,7 @@ use super::commands::{
     self, apply_cluster, apply_ephemeral_env, apply_image, apply_node_off, apply_node_on,
     apply_node_reset, apply_session, config_set, config_show,
     console_cfs_session_image_target_ansible, console_node, get_configuration, get_hsm, get_images,
-    get_nodes, get_session, get_template, update_hsm_group, update_node,
+    get_nodes, get_session, get_template, update_hsm_group, update_node, migrate_backup, migrate_restore,
 };
 
 pub async fn process_cli(
@@ -875,6 +875,19 @@ pub async fn process_cli(
             // &boot_param_vec,
         )
         .await;
+    } else if let Some(cli_migrate) = cli_root.subcommand_matches("migrate") {
+        if let Some(cli_migrate) = cli_migrate.subcommand_matches("backup") {
+            let bos = cli_migrate.get_one::<String>("bos");
+            let destination = cli_migrate.get_one::<String>("destination");
+            migrate_backup::exec(
+                shasta_token,
+                shasta_base_url,
+                bos,
+                destination
+            ).await;
+        } else if let Some(cli_migrate) = cli_migrate.subcommand_matches("restore")  {
+            log::info!(">>> MIGRATE RESTORE not implemented yet")
+        }
     }
 
     Ok(())
